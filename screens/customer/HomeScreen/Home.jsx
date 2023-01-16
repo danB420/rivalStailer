@@ -11,38 +11,56 @@ import {
   Divider,
   VStack,
 } from "native-base";
-import { ScrollView } from "native-base";
+import { ScrollView,Image } from "native-base";
+import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { async } from "q";
 
 const Home = () => {
-  const getData = async () => {
-    await axios({
-      method: "GET",
-      url: "http://192.168.0.105:5000/api-v1/get/all-businesses",
-    })
-      .then((response) => setBusinessData(response.data))
-      .catch((error) => console.log(error));
-  };
+  const [businessData,setBusinesses]=useState([]);
+  const [loading,setLoading]=useState("false")
 
-  const [businessData, setBusinessData] = useState("");
-  useEffect(() => {
-    getData();
-    console.log(businessData);
-  }, []);
+  
+  useEffect(()=>{
+    setLoading(true);
+   getData();
+   // getIndividualBiz()
+  setLoading(false);
+  },[])
+
+
+  const getData=async()=>{
+    await axios({
+      method:"GET",
+      //url:"http://192.168.0.105:5000/api-v1/get/all-businesses",
+      url:"https://63c28cf58bb1ca347553b38d.mockapi.io/businesses",
+    }).then(response=>(setBusinesses(response.data))).catch(error=>console.log(error))
+  }
+
+  const getIndividualBiz=async()=>{
+    await axios({
+      method:"GET",
+      url:"http://192.168.0.105:5000/api-v1/get/business/4",
+    }).then(response=>console.log(response.data.business.services))
+  }
 
   const ServiceSelect = (props) => {
     return (
       <Pressable
-        borderWidth="1"
-        m="2"
+
+       
         rounded="full"
-        minWidth="20"
-        p="1"
+        minWidth="24"
+       m="1"
+       p="1"
         alignItems="center"
         justifyContent="center"
         h="8"
-        fontSize="xs"
+        fontSize="md"
+        bg="#ff615c"
+       
       >
-        {props.children}
+        <Text w="100%" textAlign={"center"}  color="white">{props.name}</Text>
       </Pressable>
     );
   };
@@ -50,52 +68,83 @@ const Home = () => {
   const BusinessCard = (props) => {
     return (
       <Pressable
-        bg="gray.300"
-        h="100%"
-        w="80"
+        bg="white"
+        h="260px"
+        w="320px"
         alignItems="center"
-        rounded="3xl"
-        p="4"
-        mx="4"
+        rounded="2xl"
+        px="4"
+        py="4"
+        mx="2"
+        justifyContent={"center"}
       >
-        <Pressable bg="gray.500" h="60%" w="100%" rounded="3xl"></Pressable>
+        <Pressable bg="gray.500" h="130px" w="280px" rounded="2xl"><Image rounded="2xl" source={{
+      uri: "https://picsum.photos/280/130"
+    }} alt="Alternate Text" size="full"  />
+    
+    <Box rounded="md" w="12" h="6"  bg="white" position="absolute" bottom="3" left="3"  >
+      <Text  textAlign={"center"} ><FontAwesome name="star" size={8} color="#FFB800" />{" "+ props.rating } </Text>
+      
+      </Box>
+    </Pressable>
+       
         <HStack
           my="2"
-          w="90%"
+          w="96%"
+          h="40px"
+          
           alignItems="center"
           justifyContent="space-between"
         >
-          <Text fontSize="md">Golden Lock</Text>
-          <Text fontSize="sm" color="red.500">
-            Incepand de la 60 lei
+          <Text textAlign="center" fontSize="md" isTruncated    flex="3">{props.name}</Text>
+          <Text textAlign="center" fontSize="md"   flex="2" color="red.500">
+          <FontAwesome5 name="arrow-alt-circle-up" size={16} color="red" /> {props.minPrice + " lei"}
           </Text>
         </HStack>
         <Divider bg="muted.800" my="1"></Divider>
-        <Text w="90%" my="1" fontSize="xs" color="gray.400">
-          {props.street}
-          {props.street_number}
-          {props.city}
+        
+        <Text isTruncated  w="95%" my="1" fontSize="sm" color="gray.400">
+        {props.city}{", "}
+          {"Strada " + props.street}{" "}
+          { props.street_number} 
+          
         </Text>
+       
+
+        
+       
       </Pressable>
     );
   };
 
-  const ServiceNearbyCard = () => {
+  const ServiceNearbyCard = (props) => {
     return (
-      <Pressable bg="gray.100" h="32" w="95%" rounded="3xl" p="4" m="2">
+      <Pressable bg="gray.100" h="32" w="280px" rounded="3xl" p="4" m="2">
         <HStack w="100%">
-          <Box h="24" w="24" bg="gray.400" rounded="2xl"></Box>
+        <Pressable bg="gray.500" h="92px" w="92px" rounded="2xl"><Image rounded="2xl" source={{
+      uri: "https://picsum.photos/92/92"
+    }} alt="Alternate Text" size="full"  ></Image></Pressable>
+    
           <VStack px="4">
-            <Text>Silver Key</Text>
+            <Text>{props.name}</Text>
             <Text color="gray.400" fontSize="xs">
-              Baia Mare , Romania
+             {props.city} , {props.county}
             </Text>
-            <HStack mt="6" justifyContent="space-between" space="8">
+            <VStack mt="2" justifyContent="space-between" space="2" >
               <Text fontSize="xs" color="red.500">
-                Incepand de la 60 lei
+                Incepand de la {props.minPrice}
               </Text>
-              <Text> 4.7*</Text>
-            </HStack>
+             <HStack space="1"  alignItems="center">
+           {Array.from({length:Math.floor(props.rating)}).map((_,index)=>(
+            <FontAwesome key={index} name="star" size={12} color="black" />
+
+           ))}
+           {props.rating % Math.floor(props.rating) >0 ? <FontAwesome5 name="star-half-alt" size={10} color="black" /> : ""}
+          
+           
+            
+             </HStack>
+            </VStack>
           </VStack>
         </HStack>
       </Pressable>
@@ -103,16 +152,19 @@ const Home = () => {
   };
 
   return (
-    <Flex
+    <Box
       flexDirection="column"
       alignItems="center"
-      top="16"
-      my="4"
+      top="10"
+      py="4"
       w="100%"
-      h="100%"
+      h="95%"
+      
+      pb="12"
     >
+     <ScrollView w="100%" h="100%" contentContainerStyle={{alignItems:"center",justifyContent:"center"}}>
       {/*Logo and City select*/}
-      <Flex
+     <Flex
         flexDirection="row"
         w="85%"
         alignItems="center"
@@ -137,65 +189,57 @@ const Home = () => {
           RivalStailer
         </Text>
       </Flex>
-      {/*Logo and City select*/}
+      
 
       {/*Search Bar and Horizontal Scroll Select*/}
       <Input w="85%" rounded="2xl" h="12" my="8" placeholder="Caută"></Input>
       <Box w="80%" h="12">
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <ServiceSelect>
-            <Text>Frizerie</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Hairstylist</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Make-up </Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Manichiura</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Frizerie</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Hairstylist</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Make-up</Text>
-          </ServiceSelect>
-          <ServiceSelect>
-            <Text>Manichiura</Text>
-          </ServiceSelect>
-        </ScrollView>
+          <ServiceSelect name={"Frizerie"}/>
+          <ServiceSelect name={"Hairstylist"}/>
+          <ServiceSelect name={"Manichiura"}/>
+          <ServiceSelect name={"Frizerie"}/>
+          <ServiceSelect name={"Hairstylist"}/>
+          <ServiceSelect name={"Manichiura"}/>
+          </ScrollView>
+          
+  
+          
+          
+           
+         
+        
       </Box>
 
-      <Box w="85%" h="30%" m="4">
+      <Box w="85%" h="340px">
         <Text mt="2" pl="4" mb="4" fontSize="md">
           Servicii Recomandate
         </Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {businessData.businesses.map((business) => {
-            <BusinessCard
-              city={business.city}
-              street={business.street}
-              streetNumber={business.street_number}
-            />;
-          })}
+       { loading ? <Text>LOADING ... </Text> : businessData?.map(business=>(<BusinessCard rating={business.rating} minPrice={business.min_price} key={business.id}  city={business.city}  name={business.name}  street={business.street} street_number={business.street_number}/>)) }
         </ScrollView>
       </Box>
-      <Box w="85%" h="30%" m="4">
+      <Box  w="320px" h="200px"  >
         <Text mt="2" pl="4" mb="4" fontSize="md">
           Servicii in apropierea ta
         </Text>
-        <ScrollView showsHorizontalScrollIndicator={false}>
-          <ServiceNearbyCard></ServiceNearbyCard>
-          <ServiceNearbyCard></ServiceNearbyCard>
-          <ServiceNearbyCard></ServiceNearbyCard>
-          <ServiceNearbyCard></ServiceNearbyCard>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} h="200px" w="100%"  >
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+       { loading ? <Text>LOADING ... </Text> : businessData?.map(business=>( <ServiceNearbyCard rating={business.rating} key={business.id} name={business.name} minPrice={business.min_price} city={business.city} county={business.county}></ServiceNearbyCard>)) }
+        </ScrollView>
+         
+          
+         
+          
+          
         </ScrollView>
       </Box>
-    </Flex>
+      
+     </ScrollView>
+         {/*Logo and City select*/}
+      
+     
+    </Box>
   );
 };
 
