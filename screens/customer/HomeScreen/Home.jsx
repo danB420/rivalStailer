@@ -33,8 +33,8 @@ const Home = ({navigation}) => {
     await axios({
       method:"GET",
       //url:"http://192.168.0.105:5000/api-v1/get/all-businesses",
-      url:"https://63c28cf58bb1ca347553b38d.mockapi.io/businesses"
-    }).then(response=>(setBusinesses(response.data))).catch(error=>console.log(error))
+      url:"http://192.168.0.93:5000/api-v1/get/all-businesses"
+    }).then(response=>(setBusinesses(response.data.businesses))).catch(error=>console.log(error))
   }
 
   
@@ -77,10 +77,10 @@ const Home = ({navigation}) => {
       uri: "https://picsum.photos/280/130"
     }} alt="Alternate Text" size="full"  />
     
-    <Box rounded="md" w="12" h="6" alignItems={"center"} justifyContent={"center"}  bg="white" position="absolute" bottom="3" left="3"  >
-      <Text  textAlign={"center"} ><FontAwesome name="star" size={8} color="#FFB800" />{" "+ props.rating } </Text>
+    <HStack rounded="md" w="12" h="6"  alignItems={"center"} justifyContent={"center"} textAlign={"center"}  bg="white" position="absolute" bottom="3" left="3"  >
+    <FontAwesome name="star" size={8} color="#FFB800" /><Text  >{" "+ props.rating } </Text>
       
-      </Box>
+      </HStack>
     </Pressable>
        
         <HStack
@@ -95,6 +95,7 @@ const Home = ({navigation}) => {
           <Text textAlign="center" fontSize="md"   flex="2" color="accent.500">
           <FontAwesome5 name="arrow-alt-circle-up" size={16} color="accent.500" /> {props.minPrice + " lei"}
           </Text>
+          <Text>{props.id}</Text>
         </HStack>
         <Divider bg="muted.800" my="1"></Divider>
         
@@ -211,7 +212,7 @@ const Home = ({navigation}) => {
           Servicii Recomandate
         </Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-       { loading ? <Text>LOADING ... </Text> : businessData?.map(business=>(<BusinessCard onPress={()=>navigation.navigate('AboutBusiness',{businessId:"5"})}rating={business.rating} minPrice={business.min_price} key={business.id}  city={business.city}  name={business.name}  street={business.street} street_number={business.street_number}/>)) }
+       { loading ? <Text>LOADING ... </Text> : businessData?.map(business=>(<BusinessCard onPress={()=>{navigation.navigate('AboutBusiness',{"businessId":business.id})}} rating={business.rating} minPrice={business.min_price} key={business.id} id={business.id}  city={business.city}  name={business.name}  street={business.street} street_number={business.street_number}/>)) }
         </ScrollView>
       </Box>
       <Box  w="320px" h="200px"  >

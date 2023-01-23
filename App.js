@@ -8,6 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Authentification from "./screens/customer/Login/Register/Authentification";
 
 
+
 export default function App() {
 
   const Stack =createNativeStackNavigator();
@@ -42,7 +43,7 @@ export default function App() {
         
         <Stack.Screen
         name="Home"
-        component={Authentification}
+        component={Home}
         options={{}}
         headerShown={false}
         
@@ -71,6 +72,8 @@ export default function App() {
       </Stack.Navigator>
       </Box>
       </NavigationContainer>
+    
+      
       
 
     </NativeBaseProvider>

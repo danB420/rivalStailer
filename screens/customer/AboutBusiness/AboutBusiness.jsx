@@ -23,29 +23,23 @@ const AboutBusiness = ({route,navigation}) => {
   const businessId =  route.params.businessId;
   const rating = 4.5;
 
-  const [businessData,setBusinessData]=useState([])
-  const [services,setServices]=useState([])
+  const [businessData,setBusinessData]=useState({})
+ 
 
   const [dataFetched,setDataFetched]=useState(false)
 
   const getBusinessData= async(businessId)=>{
      await axios({
         method:"GET",
-        url:`https://63c28cf58bb1ca347553b38d.mockapi.io/businesses/${businessId}`
-      }).then(response=>setBusinessData(response.data)).catch(error=>console.log(error))
+        url:`http://192.168.0.93:5000/api-v1/get/business/${businessId}`
+      }).then(response=>setBusinessData(response.data.business)).catch(error=>console.log(error))
   }
 
-  const getServices=async()=>{
-   await axios({
-    method:"GET",
-    url:"https://63c67a12d307b7696739e3f6.mockapi.io/services"
-   }).then((response)=>(setServices(response.data))).catch(error=>console.log())
-  }
-
+ 
   useEffect(()=>{
     setDataFetched(false);
-    getBusinessData(businessId);
-    getServices();
+  getBusinessData(businessId)
+  
     setDataFetched(true)
   },[])
 
@@ -122,10 +116,7 @@ const AboutBusiness = ({route,navigation}) => {
       <Box w="90%" my="6"  >
         <Text fontSize="md" >Despre {businessData.name}</Text>
         <Text fontSize="xs" my="2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto facere
-          amet repellendus maiores, veniam, autem eaque ut nobis sed doloremque
-          suscipit, debitis aut laudantium totam facilis officiis et magni
-          vitae?
+         {businessData.description}
         </Text>
       </Box>
     );
@@ -137,7 +128,7 @@ const AboutBusiness = ({route,navigation}) => {
         <Text fontSize="md" pb="4" px="5%" >Lista Servicii </Text>
         <VStack alignItems={"center"} justifyContent="center" space="4" >
         {dataFetched === true ? (
-            services?.map((service)=>(
+            businessData.services?.map((service)=>(
               <HStack key={service.id} w="100%" bg="primary.500" px="2" py="4" rounded="xl"  justifyContent={"space-between"} alignItems="center">
                 <Box ml="1%" bg="accent.500" w="4%"  h="1" rounded="xl" ></Box>
                 <VStack py="1" rounded="xl" w="55%" alignItems={"center"} justifyContent="space-between" key={service.id}  h="16">

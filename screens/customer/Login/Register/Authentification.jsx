@@ -1,16 +1,24 @@
 import { View } from 'react-native'
 import React,{useState,useEffect  } from 'react'
-import { VStack, Text,Input, Button } from 'native-base'
+import { VStack, Text,Input, Button,Box, HStack } from 'native-base'
 import {Formik, validateYupSchema} from 'formik'
 import { loginSchema,registerSchema } from './validationSchemas.jsx/authentificationSchemas'
 import axios from 'axios'
+
+import { MaterialIcons } from '@expo/vector-icons'; 
+
 
 
 const Authentification = ({navigation}) => {
 
     const [loginForm,setLoginForm]= useState(true)
+    const [authError,setAuthError]=useState(false)
+    const [authErrorMsg,setAuthErrorMsg]=useState("")
 
-    const onSubmit=(values)=>{
+   
+    
+
+    const register=(values)=>{
             axios({
                 method:"POST",
                 url:"https://rsm.globinary.io/api-v1/register",
@@ -21,17 +29,42 @@ const Authentification = ({navigation}) => {
                     last_name:values.lastName,
                     email_address:values.emailAddress
                 }
-            }).then(response=>{if(response.data.success === true){navigation.navigate('CodeVerification',{})};console.log(response.data)}).catch(error=>console.log(error))
+            }).then(response=>{if(response.data.success === true){navigation.navigate('CodeVerification',{})} else {
+              setAuthError(true);
+              setAuthErrorMsg(response.data.msg);
+              setTimeout(()=>{setAuthError(false)},5000);
+             
+            };console.log(response.data)}).catch(error=>console.log(error))
+    }
+
+    const login=(values)=>{
+      axios({
+        method:"POST",
+        //url:"https://rsm.globinary.io/api-v1/login",
+        url:"http://192.168.0.93:5000/api-v1/login",
+        data:{
+            phone_number:values.phoneNumber,
+            password:values.password,
+        }
+    }).then(response=>{if(response.data.success=== false){
+      setAuthError(true);
+      setAuthErrorMsg(response.data.msg)
+      setTimeout(()=>setAuthError(false),5000)
+    }else {console.log(response.data)}}).catch(error=>console.log(error))
     }
  
   return (
     <VStack px="5%" w="100%" h="90%" top="10%" bg="neutral.500" space="8" alignItems={"center"} justifyContent={"flex-start"}>
-    <Text my="10" fontSize={"24"} bold>RivalStailer</Text>
+    <Text my="6" top="6" fontSize={"24"} bold>RivalStailer</Text>
+    {authError ? <HStack borderWidth="1" space="2" alignItems={"flex-start"}   p="4" borderColor={"accent.500"} bg="accent.500" rounded="2xl" mb="4" color="white"  fontSize={"md"}>
+      <MaterialIcons  color="#fff"  name="error" size={24}  /><Text color="#fff" >{authErrorMsg}</Text>
+    </HStack> : "" } 
     {loginForm === true ?  <Formik
     bg="blue.500"
     initialValues={{phoneNumber:'',password:''}}
     
     validationSchema={loginSchema}
+    onSubmit={login}
     
     >
      {({ values, handleChange, errors, setFieldTouched, touched, isValid, handleSubmit }) => (
@@ -63,7 +96,7 @@ const Authentification = ({navigation}) => {
 
         />
           <Button
-          type="submit"
+         onPress={handleSubmit}
           bg="accent.500"
           w="60%"
           h="56px"
@@ -88,7 +121,7 @@ const Authentification = ({navigation}) => {
     </Formik> :    <Formik
     
     initialValues={{phoneNumber:'',password:'',firstName:'',lastName:'',emailAddress:''}}
-    onSubmit={onSubmit}
+    onSubmit={register}
     validationSchema={loginSchema}
     >
      {({ values, handleChange, errors, setFieldTouched, touched, isValid, handleSubmit }) => (
@@ -185,9 +218,11 @@ const Authentification = ({navigation}) => {
       
       
      )}
+     
     </Formik>}
     
-       
+    
+    
     
     
     </VStack>
