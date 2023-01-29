@@ -6,6 +6,8 @@ import { loginSchema,registerSchema } from './validationSchemas.jsx/authentifica
 import axios from 'axios'
 
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { useContext } from 'react'
+import { AuthContext } from '../../../../contexts/AuthContext'
 
 
 
@@ -15,13 +17,14 @@ const Authentification = ({navigation}) => {
     const [authError,setAuthError]=useState(false)
     const [authErrorMsg,setAuthErrorMsg]=useState("")
 
-   
+    const authContext=useContext(AuthContext)
     
 
     const register=(values)=>{
             axios({
                 method:"POST",
-                url:"https://rsm.globinary.io/api-v1/register",
+                url:"http://192.168.0.88:5000/api-v1/register",
+                //url:"https://rsm.globinary.io/api-v1/register",
                 data:{
                     phone_number:values.phoneNumber,
                     password:values.password,
@@ -40,8 +43,9 @@ const Authentification = ({navigation}) => {
     const login=(values)=>{
       axios({
         method:"POST",
-        //url:"https://rsm.globinary.io/api-v1/login",
-        url:"http://192.168.0.93:5000/api-v1/login",
+        //url:"http://192.168.0.88:5000/api-v1/login",
+        url:"https://rsm.globinary.io/api-v1/login",
+    
         data:{
             phone_number:values.phoneNumber,
             password:values.password,
@@ -50,7 +54,11 @@ const Authentification = ({navigation}) => {
       setAuthError(true);
       setAuthErrorMsg(response.data.msg)
       setTimeout(()=>setAuthError(false),5000)
-    }else {console.log(response.data)}}).catch(error=>console.log(error))
+    }else {
+      authContext.saveToken(
+      response.data.access_token,
+      )
+    }}).catch(error=>console.log(error))
     }
  
   return (

@@ -15,26 +15,38 @@ import { ScrollView,Image } from "native-base";
 import { FontAwesome } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { async } from "q";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const Home = ({navigation}) => {
   const [businessData,setBusinesses]=useState([]);
   const [loading,setLoading]=useState("false")
 
+  const authContext = useContext(AuthContext)
+
   
   useEffect(()=>{
+  
     setLoading(true);
+    if(authContext.authToken !="")
    getData();
-   
   setLoading(false);
+ 
+
   },[])
 
 
   const getData=async()=>{
+   
     await axios({
       method:"GET",
-      //url:"http://192.168.0.105:5000/api-v1/get/all-businesses",
-      url:"http://192.168.0.93:5000/api-v1/get/all-businesses"
-    }).then(response=>(setBusinesses(response.data.businesses))).catch(error=>console.log(error))
+      //url:"http://192.168.0.88:5000/api-v1/get/all-businesses",
+      url:"https://rsm.globinary.io/api-v1/get/all-businesses",
+      headers:{
+        "Authorization":`Bearer ${authContext.authToken}`,
+        
+      }
+    }).then(response=>(setBusinesses(response.data.businesses),console.log(response.data))).catch(error=>console.log(error))
   }
 
   

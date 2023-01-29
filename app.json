@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint":"./Root.js",
     "name": "rivalStailer",
     "slug": "rivalStailer",
     "version": "1.0.0",
