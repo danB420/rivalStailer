@@ -17,33 +17,34 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { async } from "q";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { ActivityIndicator } from "react-native";
+
+import * as SplashScreen from 'expo-splash-screen'
+
 
 const Home = ({navigation}) => {
   const [businessData,setBusinesses]=useState([]);
+
   const [loading,setLoading]=useState("false")
+  
+  
 
   const authContext = useContext(AuthContext)
 
-  
   useEffect(()=>{
-  
     setLoading(true);
-    if(authContext.authToken !="")
-   getData();
-  setLoading(false);
- 
-
+    authContext.getToken().then(value=>getData(value)).then(setTimeout(()=>setLoading(false),250))
   },[])
 
 
-  const getData=async()=>{
+  const getData=(token)=>{
    
-    await axios({
+   axios({
       method:"GET",
       //url:"http://192.168.0.88:5000/api-v1/get/all-businesses",
       url:"https://rsm.globinary.io/api-v1/get/all-businesses",
       headers:{
-        "Authorization":`Bearer ${authContext.authToken}`,
+        "Authorization":`Bearer ${token}`,
         
       }
     }).then(response=>(setBusinesses(response.data.businesses),console.log(response.data))).catch(error=>console.log(error))
@@ -160,9 +161,11 @@ const Home = ({navigation}) => {
   };
 
   return (
+    
     <Box
       flexDirection="column"
       alignItems="center"
+      justifyContent={"center"}
       top="10"
       py="4"
       w="100%"
@@ -170,7 +173,8 @@ const Home = ({navigation}) => {
       
       pb="12"
     >
-     <ScrollView w="100%" h="100%" contentContainerStyle={{alignItems:"center",justifyContent:"center"}} showsVerticalScrollIndicator={false}>
+      {loading === true ? <ActivityIndicator size="large" color="#FD4343"/> :
+      <ScrollView w="100%" h="100%" contentContainerStyle={{alignItems:"center",justifyContent:"center"}} showsVerticalScrollIndicator={false}>
       {/*Logo and City select*/}
      <Flex
         flexDirection="row"
@@ -245,7 +249,9 @@ const Home = ({navigation}) => {
       
      </ScrollView>
       
-      
+       
+      }
+     
      
     </Box>
   );

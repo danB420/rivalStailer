@@ -23,8 +23,8 @@ const Authentification = ({navigation}) => {
     const register=(values)=>{
             axios({
                 method:"POST",
-                url:"http://192.168.0.88:5000/api-v1/register",
-                //url:"https://rsm.globinary.io/api-v1/register",
+                //url:"http://192.168.0.88:5000/api-v1/register",
+                url:"https://rsm.globinary.io/api-v1/register",
                 data:{
                     phone_number:values.phoneNumber,
                     password:values.password,
@@ -48,7 +48,7 @@ const Authentification = ({navigation}) => {
     
         data:{
             phone_number:values.phoneNumber,
-            password:values.password,
+            password:String(values.password),
         }
     }).then(response=>{if(response.data.success=== false){
       setAuthError(true);
@@ -58,6 +58,7 @@ const Authentification = ({navigation}) => {
       authContext.saveToken(
       response.data.access_token,
       )
+      console.log(response.data)
     }}).catch(error=>console.log(error))
     }
  

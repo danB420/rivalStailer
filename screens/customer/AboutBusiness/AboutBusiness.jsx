@@ -31,7 +31,7 @@ const AboutBusiness = ({route,navigation}) => {
   const getBusinessData= async(businessId)=>{
      await axios({
         method:"GET",
-        url:`http://192.168.0.93:5000/api-v1/get/business/${businessId}`
+        url:`https://rsm.globinary.io/api-v1/get/business/${businessId}`
       }).then(response=>setBusinessData(response.data.business)).catch(error=>console.log(error))
   }
 
