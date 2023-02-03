@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { NativeBaseProvider, Box, Text, extendTheme, Stack } from "native-base";
+
 import Home from "./screens/customer/HomeScreen/Home";
 import AboutBusiness from "./screens/customer/AboutBusiness/AboutBusiness";
 import CodeVerification from "./screens/customer/Login/Register/CodeVerification";
+import Authentification from "./screens/customer/Login/Register/Authentification";
+
+import Dashboard from "./screens/owner/Dashboard/Dashboard";
+import Appointments from "./screens/owner/Appointments/Appointments";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Authentification from "./screens/customer/Login/Register/Authentification";
+
 import { AuthContext} from "./contexts/AuthContext";
 import { useContext } from "react";
 
@@ -60,22 +66,35 @@ export default function App() {
                     headerShown={false}
                   />
                 </>
-              ) : (
+              ) : authContext.businessAccount ? (
                 <>
                   <Stack.Screen
-                    name="Home"
-                    component={Home}
+                    name="Dashboard"
+                    component={Dashboard}
                     options={{}}
                     headerShown={false}
                   />
                   <Stack.Screen
-                    name="AboutBusiness"
-                    component={AboutBusiness}
+                    name="Appointments"
+                    component={Appointments}
                     options={{}}
                     headerShown={false}
                   />
                 </>
-              )}
+              ): <>
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{}}
+                headerShown={false}
+              />
+              <Stack.Screen
+                name="AboutBusiness"
+                component={AboutBusiness}
+                options={{}}
+                headerShown={false}
+              />
+            </> }
             </Stack.Navigator>
           </Box>
         </NavigationContainer>

@@ -1,6 +1,6 @@
-import { View } from 'react-native'
+import { View,Switch } from 'react-native'
 import React,{useState,useEffect  } from 'react'
-import { VStack, Text,Input, Button,Box, HStack } from 'native-base'
+import { VStack, Text,Input, Button,Box, HStack, Flex } from 'native-base'
 import {Formik, validateYupSchema} from 'formik'
 import { loginSchema,registerSchema } from './validationSchemas.jsx/authentificationSchemas'
 import axios from 'axios'
@@ -11,11 +11,18 @@ import { AuthContext } from '../../../../contexts/AuthContext'
 
 
 
+
 const Authentification = ({navigation}) => {
 
     const [loginForm,setLoginForm]= useState(true)
     const [authError,setAuthError]=useState(false)
     const [authErrorMsg,setAuthErrorMsg]=useState("")
+
+    const [businessAccount,setBusinessAccount]=useState(false)
+
+  const toggleSwitch=()=>{
+    setBusinessAccount(prevState=>!prevState)
+  }
 
     const authContext=useContext(AuthContext)
     
@@ -23,14 +30,14 @@ const Authentification = ({navigation}) => {
     const register=(values)=>{
             axios({
                 method:"POST",
-                //url:"http://192.168.0.88:5000/api-v1/register",
                 url:"https://rsm.globinary.io/api-v1/register",
                 data:{
                     phone_number:values.phoneNumber,
                     password:values.password,
                     first_name:values.firstName,
                     last_name:values.lastName,
-                    email_address:values.emailAddress
+                    email_address:values.emailAddress,
+                    type:businessAccount ? "business" : "client",
                 }
             }).then(response=>{if(response.data.success === true){navigation.navigate('CodeVerification',{})} else {
               setAuthError(true);
@@ -59,6 +66,7 @@ const Authentification = ({navigation}) => {
       response.data.access_token,
       )
       console.log(response.data)
+      authContext.setBusinessAccount(response.data.user_info.type === 20 ? true : falase)
     }}).catch(error=>console.log(error))
     }
  
@@ -129,7 +137,7 @@ const Authentification = ({navigation}) => {
      )}
     </Formik> :    <Formik
     
-    initialValues={{phoneNumber:'',password:'',firstName:'',lastName:'',emailAddress:''}}
+    initialValues={{phoneNumber:'',password:'',firstName:'',lastName:'',emailAddress:'',type:0}}
     onSubmit={register}
     validationSchema={loginSchema}
     >
@@ -202,6 +210,26 @@ const Authentification = ({navigation}) => {
             bg="primary.500"
 
         />
+        <HStack w="100%" justifyContent={"space-around"} px="6" alignItems="center" >
+          <Text color="gray.500" flex="1" >
+            {businessAccount ? "" : "Cont Client"}
+            
+          </Text>
+          <Flex justifyContent="center" alignItems="center" flex="1">
+          <Switch
+        
+        trackColor={{false:"#CECECE",true:"#FFFFFF"}}
+        thumbColor={businessAccount ? "#FD4343" :"#CF4440"}
+        onValueChange={toggleSwitch}
+         value={businessAccount}
+        />
+          </Flex>
+        
+         <Text color="gray.500" flex="1">
+         {businessAccount ?"Cont Business" : ""  }
+          </Text>
+        </HStack>
+       
       
          
         <Button
