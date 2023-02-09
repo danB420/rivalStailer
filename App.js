@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { NativeBaseProvider, Box, Text, extendTheme, Stack } from "native-base";
 
+import { FontAwesome5 } from '@expo/vector-icons'; 
+
+
+import { NavigationContainer } from "@react-navigation/native";
+
+import { AuthContext} from "./contexts/AuthContext";
+import { useContext } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+//Screens
 import Home from "./screens/customer/HomeScreen/Home";
 import AboutBusiness from "./screens/customer/AboutBusiness/AboutBusiness";
 import CodeVerification from "./screens/customer/Login/Register/CodeVerification";
@@ -9,16 +19,12 @@ import Authentification from "./screens/customer/Login/Register/Authentification
 import Dashboard from "./screens/owner/Dashboard/Dashboard";
 import Appointments from "./screens/owner/Appointments/Appointments";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import { AuthContext} from "./contexts/AuthContext";
-import { useContext } from "react";
 
 export default function App() {
   
   const authContext = useContext(AuthContext)
-  const Stack = createNativeStackNavigator();
+  
+  const Tab = createBottomTabNavigator();
   const theme = extendTheme({
     colors: {
       primary: {
@@ -50,31 +56,68 @@ export default function App() {
       <NativeBaseProvider theme={theme}>
         <NavigationContainer>
           <Box bg="neutral.500" w="100%" h="100%">
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            
+            <Tab.Navigator screenOptions={({ route})=>({
+            headerShown:false,
+            tabBarActiveTintColor: '#FD4343',
+              tabBarInactiveTintColor: 'gray',
+            
+              tabBarIcon :({focused,color,size}) =>{
+                let iconName;
+                let rn= route.name;
+              
+                if(rn === "Dashboard"){
+                  iconName="home"
+                }
+                else if(rn === "Appointments")
+                iconName="calendar-alt"
+
+
+                return <FontAwesome5 name={`${iconName}`} size={24} color="black" />
+              },
+
+              
+              
+              
+               
+
+            })}
+         
+            
+         
+            >
               {authContext.authenticated === false ? (
                 <>
-                  <Stack.Screen
+               
+                  <Tab.Screen
                     name="Authentification"
                     component={Authentification}
-                    options={{}}
+                    options={{
+                      tabBarStyle: { display: "none" },
+                    }}
+                    
                     headerShown={false}
                   />
-                  <Stack.Screen
+                  <Tab.Screen
                     name="CodeVerification"
                     component={CodeVerification}
-                    options={{}}
+                    options={{
+                      tabBarStyle: { display: "none" },
+                    }}
                     headerShown={false}
                   />
                 </>
               ) : authContext.businessAccount ? (
                 <>
-                  <Stack.Screen
+                
+                  <Tab.Screen
                     name="Dashboard"
                     component={Dashboard}
-                    options={{}}
+                    options={{
+                    }}
                     headerShown={false}
                   />
-                  <Stack.Screen
+                  <Tab.Screen
                     name="Appointments"
                     component={Appointments}
                     options={{}}
@@ -82,20 +125,25 @@ export default function App() {
                   />
                 </>
               ): <>
-              <Stack.Screen
+              
+              <Tab.Screen
                 name="Home"
                 component={Home}
-                options={{}}
+                options={{
+                  tabBarStyle: { display: "none" },
+                }}
                 headerShown={false}
               />
-              <Stack.Screen
+              <Tab.Screen
                 name="AboutBusiness"
                 component={AboutBusiness}
-                options={{}}
+                options={{
+                  tabBarStyle: { display: "none" },
+                }}
                 headerShown={false}
               />
             </> }
-            </Stack.Navigator>
+            </Tab.Navigator>
           </Box>
         </NavigationContainer>
       </NativeBaseProvider>
