@@ -72,7 +72,7 @@ const Authentification = ({navigation}) => {
  
   return (
     <VStack px="5%" w="100%" h="90%" top="10%" bg="neutral.500" space="8" alignItems={"center"} justifyContent={"flex-start"}>
-    <Text my="6" top="6" fontSize={"24"} bold>RivalStailer</Text>
+    <Text my="6" top="6" fontSize={"24"}  bold>RivalStailer</Text>
     {authError ? <HStack borderWidth="1" space="2" alignItems={"flex-start"}   p="4" borderColor={"accent.500"} bg="accent.500" rounded="2xl" mb="4" color="white"  fontSize={"md"}>
       <MaterialIcons  color="#fff"  name="error" size={24}  /><Text color="#fff" >{authErrorMsg}</Text>
     </HStack> : "" } 

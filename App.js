@@ -2,6 +2,17 @@ import React, { useEffect, useState } from "react";
 import { NativeBaseProvider, Box, Text, extendTheme, Stack } from "native-base";
 
 import { FontAwesome5 } from '@expo/vector-icons'; 
+import {useFonts,
+  Nunito_100Thin,
+  Nunito_200ExtraLight,
+  Nunito_300Light,
+  Nunito_400Regular,
+  Nunito_500Medium,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+} from "@expo-google-fonts/nunito"
 
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,13 +30,61 @@ import Authentification from "./screens/customer/Login/Register/Authentification
 import Dashboard from "./screens/owner/Dashboard/Dashboard";
 import Appointments from "./screens/owner/Appointments/Appointments";
 
-
-export default function App() {
+export default function App() { 
+ 
+  const [fontsLoaded]=useFonts({
+    Nunito_100Thin,
+    Nunito_200ExtraLight,
+    Nunito_300Light,
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
+    Nunito_900Black,
+  })
   
   const authContext = useContext(AuthContext)
   
   const Tab = createBottomTabNavigator();
   const theme = extendTheme({
+    fontConfig:{
+      Nunito:{
+        100:{
+          normal:"Nunito_100Thin"
+        },
+        200:{
+          normal:"Nunito_200ExtraLight"
+        },
+        300:{
+          normal:"Nunito_300Light"
+        },
+        400:{
+          normal:"Nunito_400Regular"
+        },
+        500:{
+          normal:"Nunito_500Medium"
+        },
+        600:{
+          normal:"Nunito_600SemiBold"
+        },
+        700:{
+          normal:"Nunito_700Bold"
+        },
+        800:{
+          normal:"Nunito_800ExtraBold"
+        },
+        900:{
+          normal:"Nunito_900Black"
+        },
+
+      },
+      fonts:{
+        heading:"Nunito",
+        body:"Nunito",
+        mono:"Nunito",
+      }
+    },
     colors: {
       primary: {
         500: "#FFFFFF",
@@ -48,9 +107,13 @@ export default function App() {
  
   useEffect(() => {
    
-   console.log("AUTH TOKEN:" + authContext.authToken)
+  authContext.getToken().then(token=>console.log("Auth Token: " +token))
    
   });
+
+ 
+ 
+
   return (
     
       <NativeBaseProvider theme={theme}>
