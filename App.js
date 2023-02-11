@@ -29,6 +29,9 @@ import Authentification from "./screens/customer/Login/Register/Authentification
 
 import Dashboard from "./screens/owner/Dashboard/Dashboard";
 import Appointments from "./screens/owner/Appointments/Appointments";
+import BusinessRegister from "./screens/owner/BusinessRegister/BusinessRegister";
+
+
 
 export default function App() { 
  
@@ -183,6 +186,12 @@ export default function App() {
                   <Tab.Screen
                     name="Appointments"
                     component={Appointments}
+                    options={{}}
+                    headerShown={false}
+                  />
+                 <Tab.Screen
+                    name="Business Register"
+                    component={BusinessRegister}
                     options={{}}
                     headerShown={false}
                   />

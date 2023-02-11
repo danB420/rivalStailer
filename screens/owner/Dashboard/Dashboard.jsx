@@ -1,10 +1,18 @@
-import { Box, Flex, HStack, Select, Text, VStack } from "native-base";
-import React from "react";
+import { Box, Flex, HStack, Select, Text, VStack,Pressable } from "native-base";
+import React,{useState,useEffect, useContext} from "react";
+import axios from 'axios'
 
 import { FontAwesome5 } from '@expo/vector-icons'; 
+import { AuthContext } from "../../../contexts/AuthContext";
+
+import { MaterialIcons } from '@expo/vector-icons'; 
+
 
 
 const Header =()=>{
+
+ 
+  
   return (
     <HStack  w="100%" py="2%">
         <Box top="3%" w="50%" >
@@ -14,7 +22,7 @@ const Header =()=>{
             py="8%"
             px="5%"
             roundedRight="xl"
-            fontSize="md"
+            fontSize="md"S
           >
             Bine ai venit, nume!
           </Text>
@@ -59,7 +67,7 @@ const InfoStack=()=>{
           </Box>
           <Box justifyContent={"flex-start"} py="8%"  alignItems="center" bg="accent.500" flex="4" roundedRight={'xl'} roundedBottomLeft="xl" h="32">
             <Text m="1" color="white" fontSize={"md"}>
-              12 programari pentru azi
+           
             </Text>
             <Text m="1" color="white" >
              De la 8:00 la 16:00
@@ -74,6 +82,27 @@ const InfoStack=()=>{
 
 
 const Dashboard = () => {
+  const [businesses,setBusinesses]=useState()
+  
+  const [hasBusinesses,setHasBusinesses]=useState(false);
+
+  const authContext= useContext(AuthContext);
+
+
+  const getBussinesses=(token)=>{
+    axios({
+      method:"GET",
+      url:`${process.env.BASE_URL}/b/get/first-business`,
+      headers:{
+        "Authorization":`Bearer ${token}`
+      }
+    }).then(response=>setBusinesses(response.data.businesses)).then(setHasBusinesses(businesses?.length !== 0))
+  }
+
+  useEffect(()=>{
+   authContext.getToken().then(token=>getBussinesses(token)).then(()=>console.log(hasBusinesses))
+  },[])
+
   return (
     <Box
       flexDirection="column"
@@ -89,7 +118,23 @@ const Dashboard = () => {
     >
       
         <Header/>
-       <InfoStack/>
+        {hasBusinesses ===false ?
+        
+        <Pressable my="40%" h='20%' w='40%' bg="accent.500" rounded="xl" justifyContent="center" alignItems="center"  onPress={()=>console.log("pressed")}>
+         
+          <MaterialIcons name="add-business" size={36} color="white" />
+          
+          
+        </Pressable>
+        
+        
+        :
+        <>
+          <InfoStack/>
+        </>}
+
+     
+       
        
 
       

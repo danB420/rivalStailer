@@ -13,7 +13,7 @@ const CodeVerification = () => {
     const verifyCode=()=>{
         axios({
             method:"POST",
-            url:"https://rsm.globinary.io/api-v1/confirm",
+            url:"http://192.168.0.103:5000/api-v1/confirm",
             data:{
                 confirmation_code:value
             }

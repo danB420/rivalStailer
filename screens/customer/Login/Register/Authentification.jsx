@@ -8,6 +8,7 @@ import axios from 'axios'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { useContext } from 'react'
 import { AuthContext } from '../../../../contexts/AuthContext'
+import {BASE_URL} from '@env'
 
 
 
@@ -30,7 +31,8 @@ const Authentification = ({navigation}) => {
     const register=(values)=>{
             axios({
                 method:"POST",
-                url:"https://rsm.globinary.io/api-v1/register",
+                url:"http://192.168.0.103:5000/api-v1/register",
+               
                 data:{
                     phone_number:values.phoneNumber,
                     password:values.password,
@@ -50,8 +52,8 @@ const Authentification = ({navigation}) => {
     const login=(values)=>{
       axios({
         method:"POST",
-        //url:"http://192.168.0.88:5000/api-v1/login",
-        url:"https://rsm.globinary.io/api-v1/login",
+        url:`${BASE_URL}/login`,
+   
     
         data:{
             phone_number:values.phoneNumber,
@@ -69,6 +71,8 @@ const Authentification = ({navigation}) => {
       authContext.setBusinessAccount(response.data.user_info.type === 20 ? true : falase)
     }}).catch(error=>console.log(error))
     }
+
+    useEffect(()=>console.log(process.env.BASE_URL))
  
   return (
     <VStack px="5%" w="100%" h="90%" top="10%" bg="neutral.500" space="8" alignItems={"center"} justifyContent={"flex-start"}>

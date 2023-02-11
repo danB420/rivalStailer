@@ -59,8 +59,8 @@ const Appointments = () => {
     const AppointmentList=()=>{
       return (
         <VStack w="100%" px="5%" my="6"  space="8">
-        {appointments.map((appointment)=>(
-          <HStack key={appointment.key} bg="accent.500" py="5%"    rounded="xl">
+        {appointments.map((appointment,index)=>(
+          <HStack key={index} bg="accent.500" py="5%"    rounded="xl">
             <VStack pl="10%" w="55%" space="2">
             <Text color="white" fontSize="xl">
                 {appointment.name}
@@ -111,8 +111,8 @@ const Appointments = () => {
    
         axios({
            method:"GET",
-           //url:"http://192.168.0.88:5000/api-v1/get/business/",
-           url:"https://rsm.globinary.io/api-v1/get/business/4/appointments",
+           url:"http://192.168.0.103:5000/api-v1/get/business/4/appointments",
+          // url:"https://rsm.globinary.io/api-v1/get/business/4/appointments",
            headers:{
              "Authorization":`Bearer ${token}`,
              
