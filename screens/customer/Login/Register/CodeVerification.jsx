@@ -13,7 +13,7 @@ const CodeVerification = () => {
     const verifyCode=()=>{
         axios({
             method:"POST",
-            url:"http://192.168.0.103:5000/api-v1/confirm",
+            url:`${process.env.BASE_URL}/confirm`,
             data:{
                 confirmation_code:value
             }

@@ -42,7 +42,7 @@ const Home = ({navigation}) => {
    axios({
       method:"GET",
       //url:"http://192.168.0.88:5000/api-v1/get/all-businesses",
-      url:"https://rsm.globinary.io/api-v1/get/all-businesses",
+      url:`${process.env.BASE_URL}/get/all-businesses`,
       headers:{
         "Authorization":`Bearer ${token}`,
         

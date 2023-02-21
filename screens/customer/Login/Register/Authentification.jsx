@@ -2,19 +2,21 @@ import { View,Switch } from 'react-native'
 import React,{useState,useEffect  } from 'react'
 import { VStack, Text,Input, Button,Box, HStack, Flex } from 'native-base'
 import {Formik, validateYupSchema} from 'formik'
-import { loginSchema,registerSchema } from './validationSchemas.jsx/authentificationSchemas'
+import { loginSchema,registerSchema } from './validationSchemas/authentificationSchemas'
 import axios from 'axios'
 
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { useContext } from 'react'
 import { AuthContext } from '../../../../contexts/AuthContext'
-import {BASE_URL} from '@env'
+
 
 
 
 
 const Authentification = ({navigation}) => {
 
+
+  
     const [loginForm,setLoginForm]= useState(true)
     const [authError,setAuthError]=useState(false)
     const [authErrorMsg,setAuthErrorMsg]=useState("")
@@ -31,7 +33,7 @@ const Authentification = ({navigation}) => {
     const register=(values)=>{
             axios({
                 method:"POST",
-                url:"http://192.168.0.103:5000/api-v1/register",
+                url:`${process.env.BASE_URL}/register`,
                
                 data:{
                     phone_number:values.phoneNumber,
@@ -52,9 +54,7 @@ const Authentification = ({navigation}) => {
     const login=(values)=>{
       axios({
         method:"POST",
-        url:`${BASE_URL}/login`,
-   
-    
+        url:`${process.env.BASE_URL}/login`,
         data:{
             phone_number:values.phoneNumber,
             password:String(values.password),
@@ -68,11 +68,10 @@ const Authentification = ({navigation}) => {
       response.data.access_token,
       )
       console.log(response.data)
-      authContext.setBusinessAccount(response.data.user_info.type === 20 ? true : falase)
+      authContext.setBusinessAccount(response.data.user_info.type === 20 ? true : false)
     }}).catch(error=>console.log(error))
     }
 
-    useEffect(()=>console.log(process.env.BASE_URL))
  
   return (
     <VStack px="5%" w="100%" h="90%" top="10%" bg="neutral.500" space="8" alignItems={"center"} justifyContent={"flex-start"}>

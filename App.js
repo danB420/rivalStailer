@@ -30,6 +30,11 @@ import Authentification from "./screens/customer/Login/Register/Authentification
 import Dashboard from "./screens/owner/Dashboard/Dashboard";
 import Appointments from "./screens/owner/Appointments/Appointments";
 import BusinessRegister from "./screens/owner/BusinessRegister/BusinessRegister";
+import { LogBox } from 'react-native';
+
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 
 

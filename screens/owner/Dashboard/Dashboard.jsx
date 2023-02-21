@@ -96,7 +96,7 @@ const Dashboard = () => {
       headers:{
         "Authorization":`Bearer ${token}`
       }
-    }).then(response=>setBusinesses(response.data.businesses)).then(setHasBusinesses(businesses?.length !== 0))
+    }).then(response=>(setBusinesses(response.data.businesses),console.log(response.data.businesses))).then(setHasBusinesses(businesses?.length > 0))
   }
 
   useEffect(()=>{
