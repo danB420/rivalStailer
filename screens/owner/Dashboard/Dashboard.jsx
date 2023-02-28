@@ -6,15 +6,63 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from "../../../contexts/AuthContext";
 
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { useIsFocused } from "@react-navigation/native";
 
 
 
-const Header =()=>{
 
- 
-  
+const InfoStack=()=>{
   return (
-    <HStack  w="100%" py="2%">
+ <VStack w="85%" my="8">
+        <HStack  w="100%" rounded="xl">
+          <Box justifyContent={"center"} alignItems="center" flex="1.2" bg="accent.500"  h="20" roundedLeft="xl">
+          
+          <Box justifyContent={"center"} alignItems="center" rounded="xl" bg="white" w="70%" h="70%">
+          <FontAwesome5  name="calendar-alt" size={24} color="#FD4343" />
+            </Box>
+          </Box>
+          <Box justifyContent={"flex-start"} py="8%"  alignItems="center" bg="accent.500" flex="4" roundedRight={'xl'} roundedBottomLeft="xl" h="32">
+            <Text m="1" color="white" fontSize={"md"}>
+           
+            </Text>
+            <Text m="1" color="white" >
+             De la 8:00 la 16:00
+            </Text>
+          </Box>
+        </HStack>
+
+        </VStack>
+  )
+}
+
+
+
+const Dashboard = ({navigation},props) => {
+  const [businesses,setBusinesses]=useState("")
+  
+  const [hasBusinesses,setHasBusinesses]=useState(false);
+
+  const authContext= useContext(AuthContext);
+const isFocused = useIsFocused();
+
+  const getBussinesses=(token)=>{
+    axios({
+      method:"GET",
+      url:`${process.env.BASE_URL}/b/get/first-business`,
+      headers:{
+        "Authorization":`Bearer ${token}`
+      }
+    }).then(response=>(setBusinesses(response.data.businesses),console.log(response.data.businesses))).then(setHasBusinesses(businesses?.length > 0))
+  }
+
+  useEffect(()=>{
+    if(isFocused)
+   authContext.getToken().then(token=>getBussinesses(token)).then(()=>console.log(hasBusinesses))
+  },[props,isFocused])
+
+  return (
+    <>
+ <HStack top="12%" w="100%" py="2%">
         <Box top="3%" w="50%" >
           <Text
             bg="accent.500"
@@ -44,66 +92,11 @@ const Header =()=>{
             h="8"
             borderWidth={0}
           >
-            <Select.Item label="Golden Lock" value="gl" />
-            <Select.Item label="Silver Key" value="sk" />
-            <Select.Item label="Bronze Cup" value="b" />
+          {businesses.length > 0 ? (businesses?.map((business,index)=><Select.Item key={index} label={business.name}  />)) : ""}
           </Select>
         </VStack>
         
     </HStack>
-
-  )
-}
-
-const InfoStack=()=>{
-  return (
- <VStack w="85%" my="8">
-        <HStack  w="100%" rounded="xl">
-          <Box justifyContent={"center"} alignItems="center" flex="1.2" bg="accent.500"  h="20" roundedLeft="xl">
-          
-          <Box justifyContent={"center"} alignItems="center" rounded="xl" bg="white" w="70%" h="70%">
-          <FontAwesome5  name="calendar-alt" size={24} color="#FD4343" />
-            </Box>
-          </Box>
-          <Box justifyContent={"flex-start"} py="8%"  alignItems="center" bg="accent.500" flex="4" roundedRight={'xl'} roundedBottomLeft="xl" h="32">
-            <Text m="1" color="white" fontSize={"md"}>
-           
-            </Text>
-            <Text m="1" color="white" >
-             De la 8:00 la 16:00
-            </Text>
-          </Box>
-        </HStack>
-
-        </VStack>
-  )
-}
-
-
-
-const Dashboard = () => {
-  const [businesses,setBusinesses]=useState()
-  
-  const [hasBusinesses,setHasBusinesses]=useState(false);
-
-  const authContext= useContext(AuthContext);
-
-
-  const getBussinesses=(token)=>{
-    axios({
-      method:"GET",
-      url:`${process.env.BASE_URL}/b/get/first-business`,
-      headers:{
-        "Authorization":`Bearer ${token}`
-      }
-    }).then(response=>(setBusinesses(response.data.businesses),console.log(response.data.businesses))).then(setHasBusinesses(businesses?.length > 0))
-  }
-
-  useEffect(()=>{
-   authContext.getToken().then(token=>getBussinesses(token)).then(()=>console.log(hasBusinesses))
-  },[])
-
-  return (
     <Box
       flexDirection="column"
       
@@ -117,21 +110,21 @@ const Dashboard = () => {
       
     >
       
-        <Header/>
-        {hasBusinesses ===false ?
         
-        <Pressable my="40%" h='20%' w='40%' bg="accent.500" rounded="xl" justifyContent="center" alignItems="center"  onPress={()=>console.log("pressed")}>
+        {businesses?.length > 0 ?
+        
+        <>
+          <InfoStack/>
+        </>
+        
+        : <Pressable onPress={()=>navigation.navigate('Business Register')} my="40%" h='20%' w='40%' bg="accent.500" rounded="xl" justifyContent="center" alignItems="center">
          
           <MaterialIcons name="add-business" size={36} color="white" />
           
           
         </Pressable>
         
-        
-        :
-        <>
-          <InfoStack/>
-        </>}
+        }
 
      
        
@@ -139,6 +132,8 @@ const Dashboard = () => {
 
       
     </Box>
+    </>
+   
   );
 };
 

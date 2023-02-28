@@ -1,13 +1,32 @@
 
   import React,{useState,useEffect  } from 'react'
-  import { VStack, Text,Input, Button,Box, HStack, Flex,Select,ScrollView } from 'native-base'
+  import { VStack, Text,Input, Button,Box, HStack, Flex,Select,ScrollView,Pressable, Image } from 'native-base'
   import {Formik, validateYupSchema} from 'formik'
   import { businessRegisterSchema } from '../../customer/Login/Register/validationSchemas/businessRegisterSchema'
   import axios from 'axios'
   
+  import { launchCamera,launchImageLibrary } from 'react-native-image-picker'
+
   import { MaterialIcons } from '@expo/vector-icons'; 
   import { useContext } from 'react'
 import { AuthContext } from '../../../contexts/AuthContext'
+
+
+const createFormData=(photo,body ={})=>{
+  const data = new FormData();
+
+  data.append('file',{
+    name:photo.fileName,
+    type: photo.type,
+    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri
+  })
+
+  Object.keys(body),forEach((key)=>{
+    data.append(key.body[key]);
+  })
+
+  return data;
+}
 
 const Header =()=>{
     return (
@@ -28,23 +47,7 @@ const Header =()=>{
             <Text  bold fontSize="2xl">
               RivalStailer
             </Text>
-            <Select
-              rounded="full"
-              w="40"
-              accessibilityLabel="Alege business"
-              placeholder="Alege business"
-              _selectedItem={{
-                bg: "teal.600",
-              }}
-              bg="white"
-              fontSize="xs"
-              h="8"
-              borderWidth={0}
-            >
-              <Select.Item label="Golden Lock" value="gl" />
-              <Select.Item label="Silver Key" value="sk" />
-              <Select.Item label="Bronze Cup" value="b" />
-            </Select>
+           
           </VStack>
           
       </HStack>
@@ -54,8 +57,29 @@ const Header =()=>{
 
 
 const BusinessRegister = () => {
+
+ 
   
   
+    const [photo,setPhoto]=useState()
+
+    const handleChoosePhoto=()=>{
+      launchImageLibrary({noData:true},(response)=>{
+      console.log(response);
+        if(response){
+          setPhoto(response);
+        }
+    })
+    }
+
+    const handleUploadPhoto=()=>{
+      axios({
+        method:'POST',
+        url:`${process.env.BASE_URL}/`,
+        data:createFormData(photo,{userId:'123'})
+      }).then((response)=>console.log(response)).catch(error=>console.log(error))
+    }
+
       const [authError,setAuthError]=useState(false)
       const [authErrorMsg,setAuthErrorMsg]=useState("")
     const [authToken,setAuthToken]=useState("")
@@ -118,7 +142,19 @@ const BusinessRegister = () => {
        {({ values, handleChange, errors, setFieldTouched, touched, isValid, handleSubmit }) => (
         <ScrollView overScrollMode="never"  w="90%"  showsVerticalScrollIndicator={false}>
           <VStack w="100%" h="100%" py="5%"   alignItems={"center"} justifyContent="center" space="6">
-            
+            <Box>
+            {photo && (
+              <>
+              <Image
+              source={{uri:photo.uri}}
+              style={{width:200,height:200}}
+              />
+              <Button title="Upload Photos" onPress={()=>handleUploadPhoto}/>
+              </>
+            )}
+            <Button title="Choose Photo" onPress={()=>handleChoosePhoto}> Choose photo</Button>
+            </Box>
+           
    <Input
           w="90%"
               value = {values.name}

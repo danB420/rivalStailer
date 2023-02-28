@@ -32,23 +32,7 @@ const Appointments = () => {
               <Text  bold fontSize="2xl">
                 RivalStailer
               </Text>
-              <Select
-                rounded="full"
-                w="40"
-                accessibilityLabel="Alege business"
-                placeholder="Alege business"
-                _selectedItem={{
-                  bg: "teal.600",
-                }}
-                bg="white"
-                fontSize="xs"
-                h="8"
-                borderWidth={0}
-              >
-                <Select.Item label="Golden Lock" value="gl" />
-                <Select.Item label="Silver Key" value="sk" />
-                <Select.Item label="Bronze Cup" value="b" />
-              </Select>
+             
             </VStack>
             
         </HStack>

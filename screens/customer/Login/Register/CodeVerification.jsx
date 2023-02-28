@@ -3,7 +3,7 @@ import React, { useState,useEffect } from 'react'
 import { VStack,Input,Text } from 'native-base'
 import axios from 'axios'
 
-const CodeVerification = () => {
+const CodeVerification = ({navigation}) => {
 
     
     const [receivedCode,setReceivedCode]=useState("");
